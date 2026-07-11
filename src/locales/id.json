@@ -2555,7 +2555,8 @@
         "selectAllSessions": "Pilih semua sesi",
         "clearSelectedSessions": "Batal pilih",
         "copyToInstance": "Salin ke instans",
-        "trash": "Sampah"
+        "trash": "Sampah",
+        "openRollout": "Buka file sesi"
       },
       "confirm": {
         "title": "Pindahkan ke Sampah",
@@ -2582,13 +2583,15 @@
         "syncNeedTwo": "Setidaknya dua instansi diperlukan untuk menyinkronkan sesi",
         "pickRestoreOne": "Pilih setidaknya satu sesi untuk dipulihkan",
         "repairVisibilitySkippedOnly": "Tidak ditemukan perbedaan provider yang dapat ditulis; {{count}} file state_5.sqlite yang tidak valid atau rusak dilewati. Codex harus membuatnya ulang sebelum catatan SQLite di dalamnya dapat diperbaiki.",
-        "repairVisibilitySkippedWithBase": "{{message}}; {{count}} file state_5.sqlite yang tidak valid atau rusak dilewati. Codex harus membuatnya ulang sebelum catatan SQLite di dalamnya dapat diperbaiki."
+        "repairVisibilitySkippedWithBase": "{{message}}; {{count}} file state_5.sqlite yang tidak valid atau rusak dilewati. Codex harus membuatnya ulang sebelum catatan SQLite di dalamnya dapat diperbaiki.",
+        "missingLocation": "Instans sesi tidak ditemukan"
       },
       "groupCount": "{{count}} sesi",
       "updatedAt": "Diperbarui",
       "labels": {
         "sessionId": "ID sesi",
-        "tokenUsage": "Penggunaan token"
+        "tokenUsage": "Penggunaan token",
+        "totalTokens": "Total {{count}}"
       },
       "locationRunning": " (berjalan)",
       "untitled": "Sesi tanpa judul",
@@ -2757,6 +2760,18 @@
         "removeItem": "Keluarkan",
         "emptyFilteredTitle": "Tidak ada sesi cocok",
         "emptyFilteredDesc": "Ubah pencarian, sumber, atau status pilihan lalu coba lagi."
+      },
+      "types": {
+        "label": "Jenis sesi",
+        "normal": "Percakapan",
+        "external": "Proses eksternal",
+        "subagent": "Subagen",
+        "all": "Semua jenis"
+      },
+      "openModal": {
+        "title": "Pilih instans sesi",
+        "hint": "Sesi ini ada di beberapa instans. Pilih salinan yang akan dibuka.",
+        "instance": "Instans sesi"
       }
     },
     "modelProviders": {

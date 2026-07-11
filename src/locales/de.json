@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Alle Sitzungen wählen",
         "clearSelectedSessions": "Auswahl aufheben",
         "copyToInstance": "In Instanz kopieren",
-        "trash": "Papierkorb"
+        "trash": "Papierkorb",
+        "openRollout": "Sitzungsdatei öffnen"
       },
       "confirm": {
         "title": "In den Papierkorb verschieben",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Mindestens zwei Instanzen sind erforderlich, um Sitzungen zu synchronisieren",
         "pickRestoreOne": "Bitte wählen Sie mindestens eine Sitzung zur Wiederherstellung aus",
         "repairVisibilitySkippedOnly": "Es wurden keine schreibbaren Provider-Unterschiede gefunden; {{count}} ungültige oder beschädigte state_5.sqlite-Datei(en) wurden übersprungen. Codex muss sie neu erstellen, bevor ihre SQLite-Einträge repariert werden können.",
-        "repairVisibilitySkippedWithBase": "{{message}}; {{count}} ungültige oder beschädigte state_5.sqlite-Datei(en) wurden übersprungen. Codex muss sie neu erstellen, bevor ihre SQLite-Einträge repariert werden können."
+        "repairVisibilitySkippedWithBase": "{{message}}; {{count}} ungültige oder beschädigte state_5.sqlite-Datei(en) wurden übersprungen. Codex muss sie neu erstellen, bevor ihre SQLite-Einträge repariert werden können.",
+        "missingLocation": "Die Sitzungsinstanz wurde nicht gefunden"
       },
       "groupCount": "{{count}} Sitzungen",
       "updatedAt": "Aktualisiert",
       "labels": {
         "sessionId": "Sitzungs-ID",
-        "tokenUsage": "Token-Nutzung"
+        "tokenUsage": "Token-Nutzung",
+        "totalTokens": "{{count}} insgesamt"
       },
       "locationRunning": " (wird ausgeführt)",
       "untitled": "Unbenannte Sitzung",
@@ -2593,6 +2596,18 @@
         "removeItem": "Entfernen",
         "emptyFilteredTitle": "Keine passenden Sitzungen",
         "emptyFilteredDesc": "Suche, Quelle oder Auswahlstatus anpassen und erneut versuchen."
+      },
+      "types": {
+        "label": "Sitzungstyp",
+        "normal": "Unterhaltungen",
+        "external": "Externe Ausführungen",
+        "subagent": "Unteragenten",
+        "all": "Alle Typen"
+      },
+      "openModal": {
+        "title": "Sitzungsinstanz auswählen",
+        "hint": "Diese Sitzung ist in mehreren Instanzen vorhanden. Wählen Sie die zu öffnende Kopie.",
+        "instance": "Sitzungsinstanz"
       }
     },
     "api": {

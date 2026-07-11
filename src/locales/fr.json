@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Tout sélectionner",
         "clearSelectedSessions": "Désélectionner",
         "copyToInstance": "Copier vers instance",
-        "trash": "Corbeille"
+        "trash": "Corbeille",
+        "openRollout": "Ouvrir le fichier de session"
       },
       "confirm": {
         "title": "Déplacer vers la corbeille",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Au moins deux instances sont nécessaires pour synchroniser les sessions",
         "pickRestoreOne": "Veuillez sélectionner au moins une session à restaurer",
         "repairVisibilitySkippedOnly": "Aucune différence de fournisseur inscriptible n’a été trouvée ; {{count}} fichier(s) state_5.sqlite invalides ou corrompus ont été ignorés. Codex doit les régénérer avant que leurs enregistrements SQLite puissent être réparés.",
-        "repairVisibilitySkippedWithBase": "{{message}} ; {{count}} fichier(s) state_5.sqlite invalides ou corrompus ont été ignorés. Codex doit les régénérer avant que leurs enregistrements SQLite puissent être réparés."
+        "repairVisibilitySkippedWithBase": "{{message}} ; {{count}} fichier(s) state_5.sqlite invalides ou corrompus ont été ignorés. Codex doit les régénérer avant que leurs enregistrements SQLite puissent être réparés.",
+        "missingLocation": "L’instance de session est introuvable"
       },
       "groupCount": "{{count}} sessions​",
       "updatedAt": "Mis à jour",
       "labels": {
         "sessionId": "ID de session",
-        "tokenUsage": "Utilisation des tokens"
+        "tokenUsage": "Utilisation des tokens",
+        "totalTokens": "{{count}} au total"
       },
       "locationRunning": " (en cours d’exécution)",
       "untitled": "Session sans titre",
@@ -2593,6 +2596,18 @@
         "removeItem": "Retirer",
         "emptyFilteredTitle": "Aucune session trouvée",
         "emptyFilteredDesc": "Ajustez la recherche, la source ou la sélection puis réessayez."
+      },
+      "types": {
+        "label": "Type de session",
+        "normal": "Conversations",
+        "external": "Exécutions externes",
+        "subagent": "Sous-agents",
+        "all": "Tous les types"
+      },
+      "openModal": {
+        "title": "Sélectionner une instance de session",
+        "hint": "Cette session existe dans plusieurs instances. Choisissez la copie à ouvrir.",
+        "instance": "Instance de session"
       }
     },
     "api": {

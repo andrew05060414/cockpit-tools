@@ -49,9 +49,18 @@ pub struct CodexSessionRecord {
     pub session_id: String,
     pub title: String,
     pub cwd: String,
+    pub session_type: CodexSessionType,
     pub updated_at: Option<i64>,
     pub location_count: usize,
     pub locations: Vec<CodexSessionLocation>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CodexSessionType {
+    Normal,
+    External,
+    Subagent,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -214,6 +223,7 @@ struct ThreadSnapshot {
     id: String,
     title: String,
     cwd: String,
+    session_type: CodexSessionType,
     updated_at: Option<i64>,
     rollout_path: PathBuf,
     session_index_entry: JsonValue,
@@ -471,19 +481,19 @@ pub fn list_sessions_across_instances(
                         session_id: snapshot.id.clone(),
                         title: snapshot.title.clone(),
                         cwd: snapshot.cwd.clone(),
+                        session_type: snapshot.session_type,
                         updated_at: snapshot.updated_at,
                         location_count: 0,
                         locations: Vec::new(),
                     });
 
-            if entry.updated_at.is_none() {
-                entry.updated_at = snapshot.updated_at;
-            }
-            if entry.title.trim().is_empty() {
+            let snapshot_is_newer =
+                snapshot.updated_at.unwrap_or_default() > entry.updated_at.unwrap_or_default();
+            if snapshot_is_newer {
                 entry.title = snapshot.title.clone();
-            }
-            if entry.cwd.trim().is_empty() {
                 entry.cwd = snapshot.cwd.clone();
+                entry.session_type = snapshot.session_type;
+                entry.updated_at = snapshot.updated_at;
             }
 
             entry.locations.push(CodexSessionLocation {
@@ -1390,42 +1400,53 @@ pub fn import_sessions(
     })
 }
 
-pub fn resolve_session_location_dir(session_id: String) -> Result<PathBuf, String> {
+pub fn resolve_session_location_dir(
+    session_id: String,
+    instance_id: String,
+) -> Result<PathBuf, String> {
+    let rollout_path = resolve_session_rollout_path(session_id, instance_id)?;
+    rollout_path
+        .parent()
+        .map(Path::to_path_buf)
+        .ok_or_else(|| format!("无法解析会话文件所在目录: {}", rollout_path.display()))
+}
+
+pub fn resolve_session_rollout_path(
+    session_id: String,
+    instance_id: String,
+) -> Result<PathBuf, String> {
     let session_id = session_id.trim().to_string();
     if session_id.is_empty() {
         return Err("请选择一条会话".to_string());
     }
-    let instances = collect_instances()?;
-    let mut best_snapshot: Option<ThreadSnapshot> = None;
-    for instance in &instances {
-        for snapshot in load_thread_snapshots(instance)? {
-            if snapshot.id != session_id {
-                continue;
-            }
-            let should_replace = best_snapshot
-                .as_ref()
-                .map(|current| {
-                    snapshot.updated_at.unwrap_or_default() > current.updated_at.unwrap_or_default()
-                })
-                .unwrap_or(true);
-            if should_replace {
-                best_snapshot = Some(snapshot);
-            }
-        }
+    let instance_id = instance_id.trim().to_string();
+    if instance_id.is_empty() {
+        return Err("请选择会话所在实例".to_string());
     }
-    let Some(snapshot) = best_snapshot else {
-        return Err("未找到该会话文件".to_string());
-    };
-    snapshot
-        .rollout_path
-        .parent()
-        .map(Path::to_path_buf)
-        .ok_or_else(|| {
-            format!(
-                "无法解析会话文件所在目录: {}",
-                snapshot.rollout_path.display()
-            )
-        })
+    let instances = collect_instances()?;
+    let instance = instances
+        .iter()
+        .find(|instance| instance.id == instance_id)
+        .ok_or_else(|| "未找到所选实例".to_string())?;
+    resolve_rollout_path_from_snapshots(load_thread_snapshots(instance)?, &session_id)
+}
+
+fn resolve_rollout_path_from_snapshots(
+    snapshots: Vec<ThreadSnapshot>,
+    session_id: &str,
+) -> Result<PathBuf, String> {
+    let mut matches = snapshots
+        .into_iter()
+        .filter(|snapshot| snapshot.id == session_id)
+        .map(|snapshot| snapshot.rollout_path)
+        .collect::<Vec<_>>();
+    matches.sort();
+    matches.dedup();
+    match matches.as_slice() {
+        [] => Err("未在所选实例中找到该会话文件".to_string()),
+        [path] => Ok(path.clone()),
+        _ => Err("所选实例中存在多个同 ID 会话文件，无法确定要打开哪一个".to_string()),
+    }
 }
 
 fn collect_instances() -> Result<Vec<CodexSyncInstance>, String> {
@@ -1936,6 +1957,7 @@ fn load_thread_snapshots(instance: &CodexSyncInstance) -> Result<Vec<ThreadSnaps
                 .and_then(session_index_title)
                 .unwrap_or_else(|| id.clone());
             let cwd = session_meta_cwd(&session_meta).unwrap_or_else(|| "未知工作目录".to_string());
+            let session_type = classify_session_type(&session_meta);
             let updated_at = resolve_thread_snapshot_updated_at_seconds(
                 session_index_map.get(&id),
                 &rollout_path,
@@ -1949,6 +1971,7 @@ fn load_thread_snapshots(instance: &CodexSyncInstance) -> Result<Vec<ThreadSnaps
                 id,
                 title,
                 cwd,
+                session_type,
                 updated_at,
                 rollout_path,
                 session_index_entry,
@@ -1958,6 +1981,44 @@ fn load_thread_snapshots(instance: &CodexSyncInstance) -> Result<Vec<ThreadSnaps
     }
 
     Ok(snapshots)
+}
+
+fn classify_session_type(meta: &JsonValue) -> CodexSessionType {
+    let payload = meta.get("payload").unwrap_or(meta);
+    let has_parent = payload
+        .get("parent_thread_id")
+        .and_then(JsonValue::as_str)
+        .is_some_and(|value| !value.trim().is_empty());
+    let is_subagent = payload
+        .get("thread_source")
+        .and_then(JsonValue::as_str)
+        .is_some_and(|value| value.eq_ignore_ascii_case("subagent"))
+        || payload
+            .get("source")
+            .and_then(|source| source.get("subagent"))
+            .is_some();
+    if has_parent || is_subagent {
+        return CodexSessionType::Subagent;
+    }
+    if payload
+        .get("history_mode")
+        .and_then(JsonValue::as_str)
+        .is_some_and(|value| value.eq_ignore_ascii_case("legacy"))
+    {
+        return CodexSessionType::External;
+    }
+
+    let is_external = payload
+        .get("originator")
+        .and_then(JsonValue::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .is_some_and(|value| !value.to_ascii_lowercase().starts_with("codex"));
+    if is_external {
+        CodexSessionType::External
+    } else {
+        CodexSessionType::Normal
+    }
 }
 
 fn list_rollout_files(root_dir: &Path) -> Result<Vec<PathBuf>, String> {
@@ -2941,6 +3002,97 @@ mod tests {
     use super::*;
     use std::time::{SystemTime, UNIX_EPOCH};
 
+    #[test]
+    fn classifies_normal_external_and_subagent_sessions() {
+        assert_eq!(
+            classify_session_type(&json!({
+                "payload": { "originator": "Codex Desktop", "source": "vscode" }
+            })),
+            CodexSessionType::Normal
+        );
+        assert_eq!(
+            classify_session_type(&json!({
+                "payload": { "originator": "multica-agent-sdk", "source": "vscode" }
+            })),
+            CodexSessionType::External
+        );
+        assert_eq!(
+            classify_session_type(&json!({
+                "payload": {
+                    "originator": "Codex Desktop",
+                    "source": "vscode",
+                    "history_mode": "legacy"
+                }
+            })),
+            CodexSessionType::External
+        );
+        assert_eq!(
+            classify_session_type(&json!({
+                "payload": { "originator": "Codex Desktop", "thread_source": "subagent" }
+            })),
+            CodexSessionType::Subagent
+        );
+        assert_eq!(
+            classify_session_type(&json!({
+                "payload": {
+                    "originator": "Claude Code",
+                    "source": { "subagent": { "other": "explorer" } }
+                }
+            })),
+            CodexSessionType::Subagent
+        );
+        assert_eq!(
+            classify_session_type(&json!({
+                "payload": {
+                    "originator": "Claude Code",
+                    "parent_thread_id": "parent-1",
+                    "source": { "subagent": { "other": "guardian" } }
+                }
+            })),
+            CodexSessionType::Subagent
+        );
+    }
+
+    fn test_snapshot(session_id: &str, rollout_path: &str) -> ThreadSnapshot {
+        ThreadSnapshot {
+            id: session_id.to_string(),
+            title: String::new(),
+            cwd: String::new(),
+            session_type: CodexSessionType::Normal,
+            updated_at: None,
+            rollout_path: PathBuf::from(rollout_path),
+            session_index_entry: JsonValue::Null,
+            source_root: PathBuf::new(),
+        }
+    }
+
+    #[test]
+    fn resolves_unique_rollout_path_from_selected_instance() {
+        let path = resolve_rollout_path_from_snapshots(
+            vec![test_snapshot("session-1", "sessions/rollout-1.jsonl")],
+            "session-1",
+        )
+        .expect("unique rollout should resolve");
+        assert_eq!(path, PathBuf::from("sessions/rollout-1.jsonl"));
+    }
+
+    #[test]
+    fn rejects_missing_or_ambiguous_rollout_paths() {
+        let missing = resolve_rollout_path_from_snapshots(Vec::new(), "session-1")
+            .expect_err("missing rollout should fail");
+        assert!(missing.contains("未在所选实例中找到"));
+
+        let ambiguous = resolve_rollout_path_from_snapshots(
+            vec![
+                test_snapshot("session-1", "sessions/a.jsonl"),
+                test_snapshot("session-1", "sessions/b.jsonl"),
+            ],
+            "session-1",
+        )
+        .expect_err("ambiguous rollout should fail");
+        assert!(ambiguous.contains("多个同 ID"));
+    }
+
     fn make_temp_dir(prefix: &str) -> PathBuf {
         let unique = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -3142,6 +3294,7 @@ mod tests {
             id: session_id.to_string(),
             title: "Deleted title".to_string(),
             cwd: "/tmp/project".to_string(),
+            session_type: CodexSessionType::Normal,
             updated_at: Some(1_780_362_123),
             rollout_path: rollout_path.clone(),
             session_index_entry: json!({

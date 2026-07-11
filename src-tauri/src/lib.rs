@@ -1144,6 +1144,7 @@ pub fn run() {
             commands::codex_instance::codex_preview_session_import,
             commands::codex_instance::codex_import_sessions,
             commands::codex_instance::codex_open_session_location,
+            commands::codex_instance::codex_open_session_rollout,
             commands::codex_instance::codex_create_instance,
             commands::codex_instance::codex_update_instance,
             commands::codex_instance::codex_delete_instance,

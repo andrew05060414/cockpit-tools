@@ -2438,7 +2438,8 @@
         "selectAllSessions": "تحديد كل الجلسات",
         "clearSelectedSessions": "إلغاء تحديد الكل",
         "copyToInstance": "نسخ إلى المثيل",
-        "trash": "المهملات"
+        "trash": "المهملات",
+        "openRollout": "فتح ملف الجلسة"
       },
       "confirm": {
         "title": "نقل إلى المهملات",
@@ -2465,13 +2466,15 @@
         "syncNeedTwo": "يلزم وجود مثيلين على الأقل لمزامنة الجلسات",
         "pickRestoreOne": "يرجى تحديد جلسة واحدة على الأقل لاستعادتها",
         "repairVisibilitySkippedOnly": "لم يتم العثور على اختلافات provider قابلة للكتابة؛ تم تخطي {{count}} ملف state_5.sqlite غير صالح أو تالف. يجب أن يعيد Codex إنشاءها قبل إصلاح سجلات SQLite فيها.",
-        "repairVisibilitySkippedWithBase": "{{message}}؛ تم تخطي {{count}} ملف state_5.sqlite غير صالح أو تالف. يجب أن يعيد Codex إنشاءها قبل إصلاح سجلات SQLite فيها."
+        "repairVisibilitySkippedWithBase": "{{message}}؛ تم تخطي {{count}} ملف state_5.sqlite غير صالح أو تالف. يجب أن يعيد Codex إنشاءها قبل إصلاح سجلات SQLite فيها.",
+        "missingLocation": "تعذر العثور على مثيل الجلسة"
       },
       "groupCount": "{{count}} جلسة",
       "updatedAt": "تم التحديث",
       "labels": {
         "sessionId": "معرّف الجلسة",
-        "tokenUsage": "استخدام الرموز"
+        "tokenUsage": "استخدام الرموز",
+        "totalTokens": "الإجمالي {{count}}"
       },
       "locationRunning": " (قيد التشغيل)",
       "untitled": "جلسة بدون عنوان",
@@ -2640,6 +2643,18 @@
         "removeItem": "إزالة",
         "emptyFilteredTitle": "لا توجد جلسات مطابقة",
         "emptyFilteredDesc": "عدّل البحث أو المصدر أو حالة التحديد ثم حاول مرة أخرى."
+      },
+      "types": {
+        "label": "نوع الجلسة",
+        "normal": "المحادثات",
+        "external": "عمليات تشغيل خارجية",
+        "subagent": "الوكلاء الفرعيون",
+        "all": "كل الأنواع"
+      },
+      "openModal": {
+        "title": "اختيار مثيل الجلسة",
+        "hint": "هذه الجلسة موجودة في عدة مثيلات. اختر النسخة التي تريد فتحها.",
+        "instance": "مثيل الجلسة"
       }
     },
     "api": {

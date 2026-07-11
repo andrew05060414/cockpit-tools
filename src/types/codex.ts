@@ -323,6 +323,7 @@ export interface CodexSessionRecord {
   sessionId: string;
   title: string;
   cwd: string;
+  sessionType: 'normal' | 'external' | 'subagent';
   updatedAt?: number | null;
   locationCount: number;
   locations: CodexSessionLocation[];

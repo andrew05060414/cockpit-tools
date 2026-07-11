@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Seleccionar sesiones",
         "clearSelectedSessions": "Deseleccionar",
         "copyToInstance": "Copiar a instancia",
-        "trash": "Papelera"
+        "trash": "Papelera",
+        "openRollout": "Abrir archivo de sesión"
       },
       "confirm": {
         "title": "Mover a la papelera",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Se requieren al menos dos instancias para sincronizar sesiones",
         "pickRestoreOne": "Selecciona al menos una sesión para restaurar",
         "repairVisibilitySkippedOnly": "No se encontraron diferencias de proveedor que se puedan escribir; se omitieron {{count}} archivo(s) state_5.sqlite no válidos o dañados. Codex debe regenerarlos antes de poder reparar sus registros SQLite.",
-        "repairVisibilitySkippedWithBase": "{{message}}; se omitieron {{count}} archivo(s) state_5.sqlite no válidos o dañados. Codex debe regenerarlos antes de poder reparar sus registros SQLite."
+        "repairVisibilitySkippedWithBase": "{{message}}; se omitieron {{count}} archivo(s) state_5.sqlite no válidos o dañados. Codex debe regenerarlos antes de poder reparar sus registros SQLite.",
+        "missingLocation": "No se encontró la instancia de la sesión"
       },
       "groupCount": "{{count}} sesiones",
       "updatedAt": "Actualizado",
       "labels": {
         "sessionId": "ID de sesión",
-        "tokenUsage": "Uso de tokens"
+        "tokenUsage": "Uso de tokens",
+        "totalTokens": "{{count}} en total"
       },
       "locationRunning": " (en ejecución)",
       "untitled": "Sesión sin título",
@@ -2593,6 +2596,18 @@
         "removeItem": "Retirar",
         "emptyFilteredTitle": "Sin sesiones coincidentes",
         "emptyFilteredDesc": "Ajusta búsqueda, origen o selección e inténtalo de nuevo."
+      },
+      "types": {
+        "label": "Tipo de sesión",
+        "normal": "Conversaciones",
+        "external": "Ejecuciones externas",
+        "subagent": "Subagentes",
+        "all": "Todos los tipos"
+      },
+      "openModal": {
+        "title": "Seleccionar instancia de sesión",
+        "hint": "Esta sesión existe en varias instancias. Elige la copia que quieres abrir.",
+        "instance": "Instancia de sesión"
       }
     },
     "api": {

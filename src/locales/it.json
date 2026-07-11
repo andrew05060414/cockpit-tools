@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Seleziona sessioni",
         "clearSelectedSessions": "Deseleziona",
         "copyToInstance": "Copia in istanza",
-        "trash": "Cestino"
+        "trash": "Cestino",
+        "openRollout": "Apri file sessione"
       },
       "confirm": {
         "title": "Sposta nel cestino",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Sono necessarie almeno due istanze per sincronizzare le sessioni",
         "pickRestoreOne": "Seleziona almeno una sessione da ripristinare",
         "repairVisibilitySkippedOnly": "Non sono state trovate differenze provider scrivibili; sono stati ignorati {{count}} file state_5.sqlite non validi o danneggiati. Codex deve rigenerarli prima di poter riparare i relativi record SQLite.",
-        "repairVisibilitySkippedWithBase": "{{message}}; sono stati ignorati {{count}} file state_5.sqlite non validi o danneggiati. Codex deve rigenerarli prima di poter riparare i relativi record SQLite."
+        "repairVisibilitySkippedWithBase": "{{message}}; sono stati ignorati {{count}} file state_5.sqlite non validi o danneggiati. Codex deve rigenerarli prima di poter riparare i relativi record SQLite.",
+        "missingLocation": "Impossibile trovare l’istanza della sessione"
       },
       "groupCount": "{{count}} sessioni",
       "updatedAt": "Aggiornato",
       "labels": {
         "sessionId": "ID sessione",
-        "tokenUsage": "Utilizzo token"
+        "tokenUsage": "Utilizzo token",
+        "totalTokens": "{{count}} in totale"
       },
       "locationRunning": " (in esecuzione)",
       "untitled": "Sessione senza titolo",
@@ -2593,6 +2596,18 @@
         "removeItem": "Rimuovi",
         "emptyFilteredTitle": "Nessuna sessione trovata",
         "emptyFilteredDesc": "Modifica ricerca, origine o stato di selezione e riprova."
+      },
+      "types": {
+        "label": "Tipo di sessione",
+        "normal": "Conversazioni",
+        "external": "Esecuzioni esterne",
+        "subagent": "Sottoagenti",
+        "all": "Tutti i tipi"
+      },
+      "openModal": {
+        "title": "Seleziona istanza sessione",
+        "hint": "Questa sessione esiste in più istanze. Scegli la copia da aprire.",
+        "instance": "Istanza sessione"
       }
     },
     "api": {

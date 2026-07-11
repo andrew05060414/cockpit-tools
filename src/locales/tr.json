@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Tüm oturumları seç",
         "clearSelectedSessions": "Seçimi kaldır",
         "copyToInstance": "Örneğe kopyala",
-        "trash": "Çöp kutusu"
+        "trash": "Çöp kutusu",
+        "openRollout": "Oturum dosyasını aç"
       },
       "confirm": {
         "title": "Çöp kutusuna taşı",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Oturumları eşitlemek için en az iki örnek gerekir",
         "pickRestoreOne": "Lütfen geri yüklenecek en az bir oturum seçin",
         "repairVisibilitySkippedOnly": "Yazılabilir provider farkı bulunamadı; geçersiz veya bozuk {{count}} state_5.sqlite dosyası atlandı. Bu SQLite kayıtları onarılmadan önce Codex bu dosyaları yeniden oluşturmalıdır.",
-        "repairVisibilitySkippedWithBase": "{{message}}; geçersiz veya bozuk {{count}} state_5.sqlite dosyası atlandı. Bu SQLite kayıtları onarılmadan önce Codex bu dosyaları yeniden oluşturmalıdır."
+        "repairVisibilitySkippedWithBase": "{{message}}; geçersiz veya bozuk {{count}} state_5.sqlite dosyası atlandı. Bu SQLite kayıtları onarılmadan önce Codex bu dosyaları yeniden oluşturmalıdır.",
+        "missingLocation": "Oturum örneği bulunamadı"
       },
       "groupCount": "{{count}} oturum",
       "updatedAt": "Güncellendi",
       "labels": {
         "sessionId": "Oturum kimliği",
-        "tokenUsage": "Token kullanımı"
+        "tokenUsage": "Token kullanımı",
+        "totalTokens": "Toplam {{count}}"
       },
       "locationRunning": " (çalışıyor)",
       "untitled": "Adsız oturum",
@@ -2593,6 +2596,18 @@
         "removeItem": "Çıkar",
         "emptyFilteredTitle": "Eşleşen oturum yok",
         "emptyFilteredDesc": "Arama, kaynak veya seçim durumunu değiştirip tekrar deneyin."
+      },
+      "types": {
+        "label": "Oturum türü",
+        "normal": "Konuşmalar",
+        "external": "Harici çalıştırmalar",
+        "subagent": "Alt aracılar",
+        "all": "Tüm türler"
+      },
+      "openModal": {
+        "title": "Oturum örneğini seç",
+        "hint": "Bu oturum birden fazla örnekte bulunuyor. Açılacak kopyayı seçin.",
+        "instance": "Oturum örneği"
       }
     },
     "api": {

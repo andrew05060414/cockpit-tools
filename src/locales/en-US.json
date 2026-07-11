@@ -3109,7 +3109,8 @@
         "clearSelectedSessions": "Deselect All",
         "expand": "Expand",
         "collapse": "Collapse",
-        "trash": "Trash"
+        "trash": "Trash",
+        "openRollout": "Open Session File"
       },
       "confirm": {
         "title": "Move to Trash",
@@ -3136,13 +3137,15 @@
         "pickRestoreOne": "Please select at least one session to restore",
         "syncNeedTwo": "At least two instances are required to sync sessions",
         "repairVisibilitySkippedOnly": "No writable session index differences were found; skipped {{count}} invalid or corrupted SQLite session database(s). Codex must regenerate them before their records can be repaired.",
-        "repairVisibilitySkippedWithBase": "{{message}}; skipped {{count}} invalid or corrupted SQLite session database(s). Codex must regenerate them before their records can be repaired."
+        "repairVisibilitySkippedWithBase": "{{message}}; skipped {{count}} invalid or corrupted SQLite session database(s). Codex must regenerate them before their records can be repaired.",
+        "missingLocation": "The session instance could not be found"
       },
       "groupCount": "{{count}} sessions",
       "updatedAt": "Updated",
       "labels": {
         "sessionId": "Session ID",
-        "tokenUsage": "Token Usage"
+        "tokenUsage": "Token Usage",
+        "totalTokens": "{{count}} total"
       },
       "locationRunning": " (running)",
       "untitled": "Untitled session",
@@ -3311,6 +3314,18 @@
         "removeItem": "Remove",
         "emptyFilteredTitle": "No sessions match",
         "emptyFilteredDesc": "Adjust search, source, or selection state and try again."
+      },
+      "types": {
+        "label": "Session type",
+        "normal": "Conversations",
+        "external": "External runs",
+        "subagent": "Subagents",
+        "all": "All types"
+      },
+      "openModal": {
+        "title": "Select Session Instance",
+        "hint": "This session exists in multiple instances. Choose which copy to open.",
+        "instance": "Session instance"
       }
     },
     "groups": {

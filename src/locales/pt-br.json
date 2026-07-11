@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Selecionar sessões",
         "clearSelectedSessions": "Desmarcar tudo",
         "copyToInstance": "Copiar para instância",
-        "trash": "Lixeira"
+        "trash": "Lixeira",
+        "openRollout": "Abrir arquivo da sessão"
       },
       "confirm": {
         "title": "Mover para a lixeira",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Pelo menos duas instâncias são necessárias para sincronizar sessões",
         "pickRestoreOne": "Selecione pelo menos uma sessão para restaurar",
         "repairVisibilitySkippedOnly": "Nenhuma diferença de provider gravável foi encontrada; {{count}} arquivo(s) state_5.sqlite inválidos ou corrompidos foram ignorados. O Codex precisa recriá-los antes que seus registros SQLite possam ser reparados.",
-        "repairVisibilitySkippedWithBase": "{{message}}; {{count}} arquivo(s) state_5.sqlite inválidos ou corrompidos foram ignorados. O Codex precisa recriá-los antes que seus registros SQLite possam ser reparados."
+        "repairVisibilitySkippedWithBase": "{{message}}; {{count}} arquivo(s) state_5.sqlite inválidos ou corrompidos foram ignorados. O Codex precisa recriá-los antes que seus registros SQLite possam ser reparados.",
+        "missingLocation": "A instância da sessão não foi encontrada"
       },
       "groupCount": "{{count}} sessões",
       "updatedAt": "Atualizado",
       "labels": {
         "sessionId": "ID da sessão",
-        "tokenUsage": "Uso de tokens"
+        "tokenUsage": "Uso de tokens",
+        "totalTokens": "{{count}} no total"
       },
       "locationRunning": " (em execução)",
       "untitled": "Sessão sem título",
@@ -2593,6 +2596,18 @@
         "removeItem": "Remover",
         "emptyFilteredTitle": "Nenhuma sessão encontrada",
         "emptyFilteredDesc": "Ajuste busca, origem ou estado de seleção e tente novamente."
+      },
+      "types": {
+        "label": "Tipo de sessão",
+        "normal": "Conversas",
+        "external": "Execuções externas",
+        "subagent": "Subagentes",
+        "all": "Todos os tipos"
+      },
+      "openModal": {
+        "title": "Selecionar instância da sessão",
+        "hint": "Esta sessão existe em várias instâncias. Escolha a cópia que deseja abrir.",
+        "instance": "Instância da sessão"
       }
     },
     "api": {

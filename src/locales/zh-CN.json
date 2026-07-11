@@ -3105,6 +3105,7 @@
         "importSessions": "导入会话",
         "copySessionId": "复制会话 ID",
         "openLocation": "打开位置",
+        "openRollout": "打开会话文件",
         "selectAllSessions": "全选全部会话",
         "clearSelectedSessions": "取消全选",
         "expand": "展开",
@@ -3123,6 +3124,13 @@
         "searchTitle": "未找到匹配会话",
         "searchDesc": "请调整标题关键词后再试。"
       },
+      "types": {
+        "label": "会话类型",
+        "normal": "普通对话",
+        "external": "外部运行",
+        "subagent": "子代理",
+        "all": "全部类型"
+      },
       "search": {
         "titleLabel": "标题",
         "contentLabel": "对话内容",
@@ -3136,13 +3144,15 @@
         "pickRestoreOne": "请至少选择一条待恢复会话",
         "syncNeedTwo": "至少需要两个实例才能同步会话",
         "repairVisibilitySkippedOnly": "未发现需要写入的会话索引差异；已跳过 {{count}} 个无效或损坏的 SQLite 会话库，需由 Codex 重新生成后才能修复其中的记录",
-        "repairVisibilitySkippedWithBase": "{{message}}；已跳过 {{count}} 个无效或损坏的 SQLite 会话库，需由 Codex 重新生成后才能修复其中的记录"
+        "repairVisibilitySkippedWithBase": "{{message}}；已跳过 {{count}} 个无效或损坏的 SQLite 会话库，需由 Codex 重新生成后才能修复其中的记录",
+        "missingLocation": "未找到会话所在实例"
       },
       "groupCount": "{{count}} 条会话",
       "updatedAt": "最近更新",
       "labels": {
         "sessionId": "会话 ID",
-        "tokenUsage": "Token使用"
+        "tokenUsage": "Token使用",
+        "totalTokens": "共 {{count}}"
       },
       "locationRunning": "（运行中）",
       "untitled": "未命名会话",
@@ -3311,6 +3321,11 @@
         "removeItem": "移出",
         "emptyFilteredTitle": "当前筛选无会话",
         "emptyFilteredDesc": "调整搜索、来源或选择状态后再试。"
+      },
+      "openModal": {
+        "title": "选择会话实例",
+        "hint": "这个会话存在于多个实例中，请选择要打开的副本。",
+        "instance": "会话实例"
       }
     },
     "groups": {

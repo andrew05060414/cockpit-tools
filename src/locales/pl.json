@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Zaznacz sesje",
         "clearSelectedSessions": "Odznacz wszystko",
         "copyToInstance": "Kopiuj do instancji",
-        "trash": "Kosz"
+        "trash": "Kosz",
+        "openRollout": "Otwórz plik sesji"
       },
       "confirm": {
         "title": "Przenieś do kosza",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Do synchronizacji sesji wymagane są co najmniej dwie instancje",
         "pickRestoreOne": "Wybierz co najmniej jedną sesję do przywrócenia",
         "repairVisibilitySkippedOnly": "Nie znaleziono zapisywalnych różnic provider; pominięto {{count}} nieprawidłowych lub uszkodzonych plików state_5.sqlite. Codex musi je ponownie wygenerować, zanim będzie można naprawić ich rekordy SQLite.",
-        "repairVisibilitySkippedWithBase": "{{message}}; pominięto {{count}} nieprawidłowych lub uszkodzonych plików state_5.sqlite. Codex musi je ponownie wygenerować, zanim będzie można naprawić ich rekordy SQLite."
+        "repairVisibilitySkippedWithBase": "{{message}}; pominięto {{count}} nieprawidłowych lub uszkodzonych plików state_5.sqlite. Codex musi je ponownie wygenerować, zanim będzie można naprawić ich rekordy SQLite.",
+        "missingLocation": "Nie znaleziono instancji sesji"
       },
       "groupCount": "{{count}} sesji",
       "updatedAt": "Zaktualizowano",
       "labels": {
         "sessionId": "ID sesji",
-        "tokenUsage": "Zużycie tokenów"
+        "tokenUsage": "Zużycie tokenów",
+        "totalTokens": "Łącznie {{count}}"
       },
       "locationRunning": " (uruchomiona)",
       "untitled": "Sesja bez tytułu",
@@ -2593,6 +2596,18 @@
         "removeItem": "Usuń",
         "emptyFilteredTitle": "Brak pasujących sesji",
         "emptyFilteredDesc": "Zmień wyszukiwanie, źródło lub stan wyboru i spróbuj ponownie."
+      },
+      "types": {
+        "label": "Typ sesji",
+        "normal": "Rozmowy",
+        "external": "Uruchomienia zewnętrzne",
+        "subagent": "Podagenci",
+        "all": "Wszystkie typy"
+      },
+      "openModal": {
+        "title": "Wybierz instancję sesji",
+        "hint": "Ta sesja istnieje w wielu instancjach. Wybierz kopię do otwarcia.",
+        "instance": "Instancja sesji"
       }
     },
     "api": {

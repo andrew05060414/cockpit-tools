@@ -2508,7 +2508,8 @@
         "selectAllSessions": "全選全部會話",
         "clearSelectedSessions": "取消全選",
         "copyToInstance": "複製到實例",
-        "trash": "垃圾桶"
+        "trash": "垃圾桶",
+        "openRollout": "開啟工作階段檔案"
       },
       "confirm": {
         "title": "移到垃圾桶",
@@ -2535,13 +2536,15 @@
         "syncNeedTwo": "至少需要兩個實例才能同步會話",
         "pickRestoreOne": "請至少選擇一個要還原的工作階段",
         "repairVisibilitySkippedOnly": "未發現需要寫入的 provider 差異；已略過 {{count}} 個無效或損毀的 state_5.sqlite，需由 Codex 重新產生後才能修復其中的 SQLite 記錄。",
-        "repairVisibilitySkippedWithBase": "{{message}}；已略過 {{count}} 個無效或損毀的 state_5.sqlite，需由 Codex 重新產生後才能修復其中的 SQLite 記錄。"
+        "repairVisibilitySkippedWithBase": "{{message}}；已略過 {{count}} 個無效或損毀的 state_5.sqlite，需由 Codex 重新產生後才能修復其中的 SQLite 記錄。",
+        "missingLocation": "找不到工作階段所在的執行個體"
       },
       "groupCount": "{{count}} 條會話",
       "updatedAt": "最近更新",
       "labels": {
         "sessionId": "會話 ID",
-        "tokenUsage": "Token 使用"
+        "tokenUsage": "Token 使用",
+        "totalTokens": "共 {{count}}"
       },
       "locationRunning": "（執行中）",
       "untitled": "未命名會話",
@@ -2710,6 +2713,18 @@
         "removeItem": "移出",
         "emptyFilteredTitle": "目前篩選無會話",
         "emptyFilteredDesc": "調整搜尋、來源或選取狀態後再試。"
+      },
+      "types": {
+        "label": "工作階段類型",
+        "normal": "一般對話",
+        "external": "外部執行",
+        "subagent": "子代理",
+        "all": "全部類型"
+      },
+      "openModal": {
+        "title": "選擇工作階段執行個體",
+        "hint": "這個工作階段存在於多個執行個體中，請選擇要開啟的副本。",
+        "instance": "工作階段執行個體"
       }
     },
     "modelProviders": {

@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Vybrat všechny relace",
         "clearSelectedSessions": "Zrušit výběr",
         "copyToInstance": "Kopírovat do instance",
-        "trash": "Koš"
+        "trash": "Koš",
+        "openRollout": "Otevřít soubor relace"
       },
       "confirm": {
         "title": "Přesunout do koše",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Pro synchronizaci relací jsou potřeba alespoň dvě instance",
         "pickRestoreOne": "Vyberte prosím alespoň jednu relaci k obnovení",
         "repairVisibilitySkippedOnly": "Nebyly nalezeny žádné zapisovatelné rozdíly provideru; přeskočeno {{count}} neplatných nebo poškozených souborů state_5.sqlite. Codex je musí znovu vygenerovat, než bude možné opravit jejich záznamy SQLite.",
-        "repairVisibilitySkippedWithBase": "{{message}}; přeskočeno {{count}} neplatných nebo poškozených souborů state_5.sqlite. Codex je musí znovu vygenerovat, než bude možné opravit jejich záznamy SQLite."
+        "repairVisibilitySkippedWithBase": "{{message}}; přeskočeno {{count}} neplatných nebo poškozených souborů state_5.sqlite. Codex je musí znovu vygenerovat, než bude možné opravit jejich záznamy SQLite.",
+        "missingLocation": "Instanci relace se nepodařilo najít"
       },
       "groupCount": "{{count}} relací",
       "updatedAt": "Aktualizováno",
       "labels": {
         "sessionId": "ID relace",
-        "tokenUsage": "Využití tokenů"
+        "tokenUsage": "Využití tokenů",
+        "totalTokens": "Celkem {{count}}"
       },
       "locationRunning": " (spuštěno)",
       "untitled": "Nepojmenovaná relace",
@@ -2593,6 +2596,18 @@
         "removeItem": "Odebrat",
         "emptyFilteredTitle": "Žádné odpovídající relace",
         "emptyFilteredDesc": "Upravte hledání, zdroj nebo stav výběru a zkuste to znovu."
+      },
+      "types": {
+        "label": "Typ relace",
+        "normal": "Konverzace",
+        "external": "Externí běhy",
+        "subagent": "Podřízení agenti",
+        "all": "Všechny typy"
+      },
+      "openModal": {
+        "title": "Vybrat instanci relace",
+        "hint": "Tato relace existuje ve více instancích. Vyberte kopii, kterou chcete otevřít.",
+        "instance": "Instance relace"
       }
     },
     "api": {

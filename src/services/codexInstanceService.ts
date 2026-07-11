@@ -299,8 +299,13 @@ export async function importSessions(
   });
 }
 
-export async function openSessionLocation(sessionId: string): Promise<void> {
+export async function openSessionLocation(sessionId: string, instanceId: string): Promise<void> {
   return await invoke("codex_open_session_location", {
     sessionId,
+    instanceId,
   });
+}
+
+export async function openSessionRollout(sessionId: string, instanceId: string): Promise<void> {
+  return await invoke("codex_open_session_rollout", { sessionId, instanceId });
 }

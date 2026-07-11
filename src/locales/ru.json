@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Выбрать все сессии",
         "clearSelectedSessions": "Снять выбор",
         "copyToInstance": "Копировать в экземпляр",
-        "trash": "Корзина"
+        "trash": "Корзина",
+        "openRollout": "Открыть файл сеанса"
       },
       "confirm": {
         "title": "Переместить в корзину",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Для синхронизации сессий требуется как минимум два экземпляра",
         "pickRestoreOne": "Выберите хотя бы одну сессию для восстановления",
         "repairVisibilitySkippedOnly": "Записываемые различия provider не найдены; пропущено {{count}} недействительных или поврежденных файлов state_5.sqlite. Codex должен создать их заново, прежде чем можно будет исправить их записи SQLite.",
-        "repairVisibilitySkippedWithBase": "{{message}}; пропущено {{count}} недействительных или поврежденных файлов state_5.sqlite. Codex должен создать их заново, прежде чем можно будет исправить их записи SQLite."
+        "repairVisibilitySkippedWithBase": "{{message}}; пропущено {{count}} недействительных или поврежденных файлов state_5.sqlite. Codex должен создать их заново, прежде чем можно будет исправить их записи SQLite.",
+        "missingLocation": "Экземпляр сеанса не найден"
       },
       "groupCount": "{{count}} сессий",
       "updatedAt": "Обновлено",
       "labels": {
         "sessionId": "ID сессии",
-        "tokenUsage": "Использование токенов"
+        "tokenUsage": "Использование токенов",
+        "totalTokens": "Всего {{count}}"
       },
       "locationRunning": " (запущено)",
       "untitled": "Сессия без названия",
@@ -2593,6 +2596,18 @@
         "removeItem": "Убрать",
         "emptyFilteredTitle": "Подходящих сеансов нет",
         "emptyFilteredDesc": "Измените поиск, источник или состояние выбора."
+      },
+      "types": {
+        "label": "Тип сеанса",
+        "normal": "Диалоги",
+        "external": "Внешние запуски",
+        "subagent": "Субагенты",
+        "all": "Все типы"
+      },
+      "openModal": {
+        "title": "Выбрать экземпляр сеанса",
+        "hint": "Этот сеанс существует в нескольких экземплярах. Выберите копию для открытия.",
+        "instance": "Экземпляр сеанса"
       }
     },
     "api": {

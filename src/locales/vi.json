@@ -2391,7 +2391,8 @@
         "selectAllSessions": "Chọn mọi phiên",
         "clearSelectedSessions": "Bỏ chọn",
         "copyToInstance": "Sao chép sang phiên bản",
-        "trash": "Thùng rác"
+        "trash": "Thùng rác",
+        "openRollout": "Mở tệp phiên"
       },
       "confirm": {
         "title": "Chuyển vào thùng rác",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "Cần ít nhất hai phiên bản để đồng bộ phiên",
         "pickRestoreOne": "Hãy chọn ít nhất một phiên để khôi phục",
         "repairVisibilitySkippedOnly": "Không tìm thấy khác biệt provider có thể ghi; đã bỏ qua {{count}} tệp state_5.sqlite không hợp lệ hoặc bị hỏng. Codex phải tạo lại chúng trước khi có thể sửa các bản ghi SQLite bên trong.",
-        "repairVisibilitySkippedWithBase": "{{message}}; đã bỏ qua {{count}} tệp state_5.sqlite không hợp lệ hoặc bị hỏng. Codex phải tạo lại chúng trước khi có thể sửa các bản ghi SQLite bên trong."
+        "repairVisibilitySkippedWithBase": "{{message}}; đã bỏ qua {{count}} tệp state_5.sqlite không hợp lệ hoặc bị hỏng. Codex phải tạo lại chúng trước khi có thể sửa các bản ghi SQLite bên trong.",
+        "missingLocation": "Không tìm thấy phiên bản chứa phiên này"
       },
       "groupCount": "{{count}} phiên",
       "updatedAt": "Đã cập nhật",
       "labels": {
         "sessionId": "ID phiên",
-        "tokenUsage": "Mức dùng token"
+        "tokenUsage": "Mức dùng token",
+        "totalTokens": "Tổng cộng {{count}}"
       },
       "locationRunning": " (đang chạy)",
       "untitled": "Phiên chưa đặt tên",
@@ -2593,6 +2596,18 @@
         "removeItem": "Bỏ",
         "emptyFilteredTitle": "Không có phiên phù hợp",
         "emptyFilteredDesc": "Điều chỉnh tìm kiếm, nguồn hoặc trạng thái chọn rồi thử lại."
+      },
+      "types": {
+        "label": "Loại phiên",
+        "normal": "Cuộc trò chuyện",
+        "external": "Lần chạy bên ngoài",
+        "subagent": "Tác nhân phụ",
+        "all": "Tất cả loại"
+      },
+      "openModal": {
+        "title": "Chọn phiên bản của phiên",
+        "hint": "Phiên này tồn tại trong nhiều phiên bản. Hãy chọn bản sao cần mở.",
+        "instance": "Phiên bản của phiên"
       }
     },
     "api": {

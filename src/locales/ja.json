@@ -2391,7 +2391,8 @@
         "selectAllSessions": "全セッションを選択",
         "clearSelectedSessions": "選択解除",
         "copyToInstance": "インスタンスへコピー",
-        "trash": "ゴミ箱"
+        "trash": "ゴミ箱",
+        "openRollout": "セッションファイルを開く"
       },
       "confirm": {
         "title": "ゴミ箱へ移動",
@@ -2418,13 +2419,15 @@
         "syncNeedTwo": "セッションを同期するには少なくとも2つのインスタンスが必要です",
         "pickRestoreOne": "復元するセッションを 1 つ以上選択してください",
         "repairVisibilitySkippedOnly": "書き込み可能な provider 差分は見つかりませんでした。無効または破損した state_5.sqlite ファイル {{count}} 件をスキップしました。SQLite レコードを修復するには、先に Codex がそれらを再生成する必要があります。",
-        "repairVisibilitySkippedWithBase": "{{message}}。無効または破損した state_5.sqlite ファイル {{count}} 件をスキップしました。SQLite レコードを修復するには、先に Codex がそれらを再生成する必要があります。"
+        "repairVisibilitySkippedWithBase": "{{message}}。無効または破損した state_5.sqlite ファイル {{count}} 件をスキップしました。SQLite レコードを修復するには、先に Codex がそれらを再生成する必要があります。",
+        "missingLocation": "セッションのインスタンスが見つかりません"
       },
       "groupCount": "{{count}} 件のセッション",
       "updatedAt": "更新済み",
       "labels": {
         "sessionId": "セッション ID",
-        "tokenUsage": "Token 使用量"
+        "tokenUsage": "Token 使用量",
+        "totalTokens": "合計 {{count}}"
       },
       "locationRunning": "（実行中）",
       "untitled": "無題のセッション",
@@ -2593,6 +2596,18 @@
         "removeItem": "外す",
         "emptyFilteredTitle": "一致する会話がありません",
         "emptyFilteredDesc": "検索、ソース、選択状態を調整してください。"
+      },
+      "types": {
+        "label": "セッション種別",
+        "normal": "会話",
+        "external": "外部実行",
+        "subagent": "サブエージェント",
+        "all": "すべての種別"
+      },
+      "openModal": {
+        "title": "セッションのインスタンスを選択",
+        "hint": "このセッションは複数のインスタンスにあります。開くコピーを選択してください。",
+        "instance": "セッションのインスタンス"
       }
     },
     "api": {

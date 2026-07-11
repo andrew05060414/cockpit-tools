@@ -2,7 +2,7 @@ import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } fr
 import { useTranslation } from 'react-i18next';
 import { confirm as confirmDialog, open as openFileDialog, save as saveFileDialog } from '@tauri-apps/plugin-dialog';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
-import { Check, ChevronDown, ChevronRight, Copy, Download, Eye, Folder, FolderOpen, Minimize2, RefreshCw, RotateCcw, Search, Trash2, Upload, X } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, Copy, Download, Eye, FileText, Folder, FolderOpen, Minimize2, RefreshCw, RotateCcw, Search, Trash2, Upload, X } from 'lucide-react';
 import { ModalErrorMessage, useModalErrorState } from '../ModalErrorMessage';
 import { SingleSelectDropdown, type SingleSelectOption } from '../SingleSelectDropdown';
 import { useEscClose } from '../../hooks/useEscClose';
@@ -32,6 +32,13 @@ type SessionGroup = {
 
 type InstanceSortField = 'createdAt' | 'lastLaunchedAt';
 type InstanceSortDirection = 'asc' | 'desc';
+type SessionTypeFilter = 'normal' | 'external' | 'subagent' | 'all';
+type SessionOpenAction = 'rollout' | 'location';
+
+interface SessionOpenTarget {
+  session: CodexSessionRecord;
+  action: SessionOpenAction;
+}
 type SessionTransferStatus = 'running' | 'success' | 'error';
 type ExportSelectionFilter = 'all' | 'selected' | 'unselected';
 
@@ -146,8 +153,11 @@ function formatLargeNumber(value: number): string {
   return value.toLocaleString();
 }
 
-function formatTokenStats(stats?: CodexSessionTokenStats): string {
+function formatTokenStats(stats: CodexSessionTokenStats | undefined, totalLabel: string): string {
   if (stats) {
+    if (stats.inputTokens === 0 && stats.outputTokens === 0 && stats.totalTokens > 0) {
+      return totalLabel;
+    }
     return `${formatLargeNumber(stats.inputTokens)} / ${formatLargeNumber(stats.outputTokens)} tokens`;
   }
 
@@ -240,6 +250,7 @@ export function CodexSessionManager() {
   const previewSessionImport = useCodexInstanceStore((state) => state.previewSessionImport);
   const importSessions = useCodexInstanceStore((state) => state.importSessions);
   const openSessionLocation = useCodexInstanceStore((state) => state.openSessionLocation);
+  const openSessionRollout = useCodexInstanceStore((state) => state.openSessionRollout);
   const [sessions, setSessions] = useState<CodexSessionRecord[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
@@ -281,6 +292,9 @@ export function CodexSessionManager() {
   const [loadedTokenGroupCwds, setLoadedTokenGroupCwds] = useState<string[]>([]);
   const [titleSearchInput, setTitleSearchInput] = useState('');
   const [appliedTitleSearch, setAppliedTitleSearch] = useState('');
+  const [sessionTypeFilter, setSessionTypeFilter] = useState<SessionTypeFilter>('normal');
+  const [sessionOpenTarget, setSessionOpenTarget] = useState<SessionOpenTarget | null>(null);
+  const [sessionOpenInstanceId, setSessionOpenInstanceId] = useState('');
   const {
     message: restoreModalError,
     scrollKey: restoreModalErrorScrollKey,
@@ -308,10 +322,14 @@ export function CodexSessionManager() {
   const transferTaskIdRef = useRef<string | null>(null);
   const isZh = i18n.resolvedLanguage?.toLowerCase().startsWith('zh') ?? true;
 
-  const groupedSessions = useMemo(() => buildGroups(sessions), [sessions]);
+  const visibleSessions = useMemo(
+    () => sessions.filter((session) => sessionTypeFilter === 'all' || session.sessionType === sessionTypeFilter),
+    [sessionTypeFilter, sessions],
+  );
+  const groupedSessions = useMemo(() => buildGroups(visibleSessions), [visibleSessions]);
   const allSessionIds = useMemo(
-    () => Array.from(new Set(sessions.map((session) => session.sessionId))),
-    [sessions],
+    () => Array.from(new Set(visibleSessions.map((session) => session.sessionId))),
+    [visibleSessions],
   );
   const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
   const selectedTrashIdSet = useMemo(() => new Set(selectedTrashIds), [selectedTrashIds]);
@@ -360,6 +378,15 @@ export function CodexSessionManager() {
           : instance.name || t('instances.defaultName', '默认实例'),
       })),
     [orderedInstances, t],
+  );
+  const sessionTypeOptions = useMemo<SingleSelectOption[]>(
+    () => [
+      { value: 'normal', label: t('codex.sessionManager.types.normal', '普通对话') },
+      { value: 'external', label: t('codex.sessionManager.types.external', '外部运行') },
+      { value: 'subagent', label: t('codex.sessionManager.types.subagent', '子代理') },
+      { value: 'all', label: t('codex.sessionManager.types.all', '全部类型') },
+    ],
+    [t],
   );
   const importReadyItems = useMemo(
     () => importPreview?.items.filter((item) => item.status === 'ready') ?? [],
@@ -1250,6 +1277,13 @@ export function CodexSessionManager() {
 
   useEscClose(showImportModal, handleCloseImportModal);
 
+  const handleCloseSessionOpenModal = () => {
+    setSessionOpenTarget(null);
+    setSessionOpenInstanceId('');
+  };
+
+  useEscClose(Boolean(sessionOpenTarget), handleCloseSessionOpenModal);
+
   const handleChangeImportTarget = async (targetInstanceId: string) => {
     setImportTargetInstanceId(targetInstanceId);
     setImportModalError(null);
@@ -1357,15 +1391,43 @@ export function CodexSessionManager() {
     }
   };
 
-  const handleOpenSessionLocation = async (
+  const openSessionTarget = async (target: SessionOpenTarget, instanceId: string) => {
+    if (target.action === 'rollout') {
+      await openSessionRollout(target.session.sessionId, instanceId);
+    } else {
+      await openSessionLocation(target.session.sessionId, instanceId);
+    }
+  };
+
+  const handleOpenSession = async (
     event: MouseEvent<HTMLButtonElement>,
-    sessionId: string,
+    session: CodexSessionRecord,
+    action: SessionOpenAction,
   ) => {
     event.preventDefault();
     event.stopPropagation();
     setMessage(null);
+    const target = { session, action };
+    if (session.locations.length > 1) {
+      setSessionOpenTarget(target);
+      setSessionOpenInstanceId(session.locations[0]?.instanceId ?? '');
+      return;
+    }
     try {
-      await openSessionLocation(sessionId);
+      const instanceId = session.locations[0]?.instanceId;
+      if (!instanceId) throw new Error(t('codex.sessionManager.messages.missingLocation', '未找到会话所在实例'));
+      await openSessionTarget(target, instanceId);
+    } catch (error) {
+      setMessage({ text: String(error), tone: 'error' });
+    }
+  };
+
+  const handleConfirmSessionOpen = async () => {
+    if (!sessionOpenTarget || !sessionOpenInstanceId) return;
+    setMessage(null);
+    try {
+      await openSessionTarget(sessionOpenTarget, sessionOpenInstanceId);
+      handleCloseSessionOpenModal();
     } catch (error) {
       setMessage({ text: String(error), tone: 'error' });
     }
@@ -1423,6 +1485,17 @@ export function CodexSessionManager() {
               />
             </div>
           </label>
+          <SingleSelectDropdown
+            className="codex-session-manager__type-filter"
+            value={sessionTypeFilter}
+            options={sessionTypeOptions}
+            onChange={(value) => {
+              setSessionTypeFilter(value as SessionTypeFilter);
+              setSelectedIds([]);
+            }}
+            disabled={loading}
+            ariaLabel={t('codex.sessionManager.types.label', '会话类型')}
+          />
           <button
             className="btn btn-secondary codex-session-manager__search-button"
             type="button"
@@ -1642,7 +1715,14 @@ export function CodexSessionManager() {
                   <div className="codex-session-folder__children">
                     {group.sessions.map((session) => {
                       const hasRunningLocation = session.locations.some((location) => location.running);
-                      const tokenText = formatTokenStats(tokenStatsBySessionId[session.sessionId]);
+                      const tokenStats = tokenStatsBySessionId[session.sessionId];
+                      const tokenText = formatTokenStats(
+                        tokenStats,
+                        t('codex.sessionManager.labels.totalTokens', {
+                          defaultValue: '{{count}} total',
+                          count: formatLargeNumber(tokenStats?.totalTokens ?? 0),
+                        }),
+                      );
                       return (
                         <div className="codex-session-row" key={session.sessionId}>
                           <label className="codex-session-row__left">
@@ -1680,7 +1760,16 @@ export function CodexSessionManager() {
                             <button
                               className="codex-session-row__copy-button"
                               type="button"
-                              onClick={(event) => void handleOpenSessionLocation(event, session.sessionId)}
+                              onClick={(event) => void handleOpenSession(event, session, 'rollout')}
+                              title={t('codex.sessionManager.actions.openRollout', '打开会话文件')}
+                              aria-label={t('codex.sessionManager.actions.openRollout', '打开会话文件')}
+                            >
+                              <FileText size={14} />
+                            </button>
+                            <button
+                              className="codex-session-row__copy-button"
+                              type="button"
+                              onClick={(event) => void handleOpenSession(event, session, 'location')}
                               title={t('codex.sessionManager.actions.openLocation', '打开位置')}
                               aria-label={t('codex.sessionManager.actions.openLocation', '打开位置')}
                             >
@@ -1708,6 +1797,42 @@ export function CodexSessionManager() {
               </section>
             );
           })}
+        </div>
+      ) : null}
+
+      {sessionOpenTarget ? (
+        <div className="modal-overlay" onClick={handleCloseSessionOpenModal}>
+          <div className="modal codex-session-open-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{t('codex.sessionManager.openModal.title', '选择会话实例')}</h2>
+              <button className="modal-close" type="button" onClick={handleCloseSessionOpenModal} aria-label={t('common.close', '关闭')}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p className="codex-session-target-modal__hint">
+                {t('codex.sessionManager.openModal.hint', '这个会话存在于多个实例中，请选择要打开的副本。')}
+              </p>
+              <SingleSelectDropdown
+                className="codex-session-target-modal__select"
+                value={sessionOpenInstanceId}
+                options={sessionOpenTarget.session.locations.map((location) => ({
+                  value: location.instanceId,
+                  label: location.instanceName,
+                }))}
+                onChange={setSessionOpenInstanceId}
+                ariaLabel={t('codex.sessionManager.openModal.instance', '会话实例')}
+              />
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" type="button" onClick={handleCloseSessionOpenModal}>
+                {t('common.cancel', '取消')}
+              </button>
+              <button className="btn btn-primary" type="button" onClick={() => void handleConfirmSessionOpen()} disabled={!sessionOpenInstanceId}>
+                {t('common.open', '打开')}
+              </button>
+            </div>
+          </div>
         </div>
       ) : null}
 
