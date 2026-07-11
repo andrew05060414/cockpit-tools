@@ -14,6 +14,7 @@ import {
   ArrowDown,
   ArrowUp,
   CircleAlert,
+  Check,
   ChevronDown,
   Copy,
   Clock,
@@ -79,6 +80,7 @@ import {
   listCodexModelProviders,
   normalizeCodexModelProviderBaseUrl,
   removeApiKeyFromCodexModelProvider,
+  renameApiKeyOnCodexModelProvider,
   queryCodexModelProviderUsage,
   saveCodexModelProviderDetectedIntegrationType,
   testCodexModelProviderConnection,
@@ -581,6 +583,11 @@ export function CodexModelProviderManager({
   );
   const [formError, setFormError] = useState<string | null>(null);
   const [form, setForm] = useState<ProviderFormState>(EMPTY_FORM);
+  const [editingApiKeyName, setEditingApiKeyName] = useState<{
+    providerId: string;
+    apiKeyId: string;
+    value: string;
+  } | null>(null);
   const [currentAccount, setCurrentAccount] = useState<CodexAccount | null>(
     null,
   );
@@ -2165,6 +2172,27 @@ export function CodexModelProviderManager({
     },
     [parseServiceError, reloadProviders, t],
   );
+
+  const handleSaveApiKeyName = useCallback(async () => {
+    if (!editingApiKeyName) return;
+    try {
+      await renameApiKeyOnCodexModelProvider(
+        editingApiKeyName.providerId,
+        editingApiKeyName.apiKeyId,
+        editingApiKeyName.value,
+      );
+      setEditingApiKeyName(null);
+      await reloadProviders();
+    } catch (err) {
+      setNotice({
+        tone: "error",
+        text: t("codex.modelProviders.updateFailed", {
+          defaultValue: "更新供应商失败：{{error}}",
+          error: parseServiceError(err),
+        }),
+      });
+    }
+  }, [editingApiKeyName, parseServiceError, reloadProviders, t]);
 
   const handleBatchDeleteProviders = useCallback(async () => {
     const ids = Array.from(selectedProviderIds);
@@ -4642,15 +4670,79 @@ export function CodexModelProviderManager({
                       {currentEditingProvider.apiKeys.map((item) => (
                         <div className="codex-provider-key-row" key={item.id}>
                           <div className="codex-provider-key-text">
-                            <span className="codex-provider-key-name">
-                              {item.name ||
-                                t(
-                                  "codex.modelProviders.unnamedKey",
-                                  "未命名 Key",
-                                )}
-                            </span>
+                            {editingApiKeyName?.providerId ===
+                              currentEditingProvider.id &&
+                            editingApiKeyName.apiKeyId === item.id ? (
+                              <input
+                                className="form-input"
+                                value={editingApiKeyName.value}
+                                onChange={(event) =>
+                                  setEditingApiKeyName((current) =>
+                                    current
+                                      ? { ...current, value: event.target.value }
+                                      : current,
+                                  )
+                                }
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter") {
+                                    event.preventDefault();
+                                    void handleSaveApiKeyName();
+                                  }
+                                  if (event.key === "Escape") {
+                                    setEditingApiKeyName(null);
+                                  }
+                                }}
+                                autoFocus
+                                disabled={saving}
+                              />
+                            ) : (
+                              <span className="codex-provider-key-name">
+                                {item.name ||
+                                  t(
+                                    "codex.modelProviders.unnamedKey",
+                                    "未命名 Key",
+                                  )}
+                              </span>
+                            )}
                             <code>{maskApiKey(item.apiKey)}</code>
                           </div>
+                          {editingApiKeyName?.providerId ===
+                            currentEditingProvider.id &&
+                          editingApiKeyName.apiKeyId === item.id ? (
+                            <>
+                              <button
+                                className="action-btn"
+                                onClick={() => void handleSaveApiKeyName()}
+                                disabled={saving}
+                                title={t("common.save", "保存")}
+                              >
+                                <Check size={12} />
+                              </button>
+                              <button
+                                className="action-btn"
+                                onClick={() => setEditingApiKeyName(null)}
+                                disabled={saving}
+                                title={t("common.cancel", "取消")}
+                              >
+                                <X size={12} />
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              className="action-btn"
+                              onClick={() =>
+                                setEditingApiKeyName({
+                                  providerId: currentEditingProvider.id,
+                                  apiKeyId: item.id,
+                                  value: item.name,
+                                })
+                              }
+                              disabled={saving}
+                              title={t("common.edit", "编辑")}
+                            >
+                              <Pencil size={12} />
+                            </button>
+                          )}
                           <button
                             className="action-btn danger"
                             onClick={() =>

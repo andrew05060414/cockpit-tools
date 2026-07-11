@@ -433,9 +433,6 @@ function ensureApiKeyOnProvider(
   const now = Date.now();
   const existing = provider.apiKeys.find((item) => sanitizeApiKey(item.apiKey) === normalized);
   if (existing) {
-    if (apiKeyName && sanitizeName(apiKeyName)) {
-      existing.name = sanitizeName(apiKeyName);
-    }
     existing.updatedAt = now;
     return;
   }
@@ -660,6 +657,25 @@ export async function removeApiKeyFromCodexModelProvider(
   }
   provider.apiKeys = nextApiKeys;
   provider.updatedAt = Date.now();
+  await writeProviders(providers);
+  return { ...provider, apiKeys: provider.apiKeys.map((item) => ({ ...item })) };
+}
+
+export async function renameApiKeyOnCodexModelProvider(
+  providerId: string,
+  apiKeyId: string,
+  name: string,
+): Promise<CodexModelProvider> {
+  const providers = await ensureProvidersLoaded();
+  const provider = providers.find((item) => item.id === providerId);
+  if (!provider) throw new Error('PROVIDER_NOT_FOUND');
+  const apiKey = provider.apiKeys.find((item) => item.id === apiKeyId);
+  if (!apiKey) throw new Error('API_KEY_NOT_FOUND');
+
+  const now = Date.now();
+  apiKey.name = sanitizeName(name);
+  apiKey.updatedAt = now;
+  provider.updatedAt = now;
   await writeProviders(providers);
   return { ...provider, apiKeys: provider.apiKeys.map((item) => ({ ...item })) };
 }
