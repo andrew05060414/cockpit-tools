@@ -1309,7 +1309,6 @@ fn build_cursor_display_info(lang: &str) -> AccountDisplayInfo {
 
 #[cfg(not(target_os = "macos"))]
 
-#[derive(Debug, Clone)]
 #[cfg(not(target_os = "macos"))]
 
 #[cfg(not(target_os = "macos"))]
