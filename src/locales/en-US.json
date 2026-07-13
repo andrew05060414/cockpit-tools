@@ -3145,7 +3145,7 @@
       "labels": {
         "sessionId": "Session ID",
         "tokenUsage": "Token Usage",
-        "totalTokens": "{{count}} total"
+        "totalTokens": "{{value}} total"
       },
       "locationRunning": " (running)",
       "untitled": "Untitled session",

@@ -2591,7 +2591,7 @@
       "labels": {
         "sessionId": "ID sesi",
         "tokenUsage": "Penggunaan token",
-        "totalTokens": "Total {{count}}"
+        "totalTokens": "Total {{value}}"
       },
       "locationRunning": " (berjalan)",
       "untitled": "Sesi tanpa judul",

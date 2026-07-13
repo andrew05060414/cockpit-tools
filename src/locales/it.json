@@ -2427,7 +2427,7 @@
       "labels": {
         "sessionId": "ID sessione",
         "tokenUsage": "Utilizzo token",
-        "totalTokens": "{{count}} in totale"
+        "totalTokens": "{{value}} in totale"
       },
       "locationRunning": " (in esecuzione)",
       "untitled": "Sessione senza titolo",

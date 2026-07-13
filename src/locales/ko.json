@@ -2427,7 +2427,7 @@
       "labels": {
         "sessionId": "세션 ID",
         "tokenUsage": "토큰 사용량",
-        "totalTokens": "총 {{count}}"
+        "totalTokens": "총 {{value}}"
       },
       "locationRunning": " (실행 중)",
       "untitled": "제목 없는 세션",

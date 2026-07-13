@@ -2427,7 +2427,7 @@
       "labels": {
         "sessionId": "Oturum kimliği",
         "tokenUsage": "Token kullanımı",
-        "totalTokens": "Toplam {{count}}"
+        "totalTokens": "Toplam {{value}}"
       },
       "locationRunning": " (çalışıyor)",
       "untitled": "Adsız oturum",

@@ -2544,7 +2544,7 @@
       "labels": {
         "sessionId": "會話 ID",
         "tokenUsage": "Token 使用",
-        "totalTokens": "共 {{count}}"
+        "totalTokens": "共 {{value}}"
       },
       "locationRunning": "（執行中）",
       "untitled": "未命名會話",

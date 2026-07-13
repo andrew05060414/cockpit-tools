@@ -2427,7 +2427,7 @@
       "labels": {
         "sessionId": "ID relace",
         "tokenUsage": "Využití tokenů",
-        "totalTokens": "Celkem {{count}}"
+        "totalTokens": "Celkem {{value}}"
       },
       "locationRunning": " (spuštěno)",
       "untitled": "Nepojmenovaná relace",

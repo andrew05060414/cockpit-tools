@@ -2427,7 +2427,7 @@
       "labels": {
         "sessionId": "セッション ID",
         "tokenUsage": "Token 使用量",
-        "totalTokens": "合計 {{count}}"
+        "totalTokens": "合計 {{value}}"
       },
       "locationRunning": "（実行中）",
       "untitled": "無題のセッション",

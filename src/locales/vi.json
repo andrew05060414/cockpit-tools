@@ -2427,7 +2427,7 @@
       "labels": {
         "sessionId": "ID phiên",
         "tokenUsage": "Mức dùng token",
-        "totalTokens": "Tổng cộng {{count}}"
+        "totalTokens": "Tổng cộng {{value}}"
       },
       "locationRunning": " (đang chạy)",
       "untitled": "Phiên chưa đặt tên",

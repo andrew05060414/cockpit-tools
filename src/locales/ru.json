@@ -2427,7 +2427,7 @@
       "labels": {
         "sessionId": "ID сессии",
         "tokenUsage": "Использование токенов",
-        "totalTokens": "Всего {{count}}"
+        "totalTokens": "Всего {{value}}"
       },
       "locationRunning": " (запущено)",
       "untitled": "Сессия без названия",

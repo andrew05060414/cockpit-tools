@@ -1718,10 +1718,13 @@ export function CodexSessionManager() {
                       const tokenStats = tokenStatsBySessionId[session.sessionId];
                       const tokenText = formatTokenStats(
                         tokenStats,
-                        t('codex.sessionManager.labels.totalTokens', {
-                          defaultValue: '{{count}} total',
-                          count: formatLargeNumber(tokenStats?.totalTokens ?? 0),
-                        }),
+                        t(
+                          'codex.sessionManager.labels.totalTokens',
+                          '{{value}} total',
+                          {
+                            value: formatLargeNumber(tokenStats?.totalTokens ?? 0),
+                          },
+                        ),
                       );
                       return (
                         <div className="codex-session-row" key={session.sessionId}>
