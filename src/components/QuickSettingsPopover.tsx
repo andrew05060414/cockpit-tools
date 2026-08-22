@@ -3583,7 +3583,7 @@ export function QuickSettingsPopover({ type }: QuickSettingsPopoverProps) {
                     <div className="qs-hint">
                       {t(
                         'settings.general.antigravitySwitchTargetsHint',
-                        '未勾选具体目标时，将自动检测本机已安装的 Antigravity 产品。CLI 在 Windows 上与桌面版共用 gemini:antigravity 系统凭据。'
+                        '未勾选具体目标时：手动「同步所有目标」会检测本机已安装产品；自动切号默认只切首选已安装产品。CLI 在 Windows 上与桌面版共用 gemini:antigravity 系统凭据。'
                       )}
                     </div>
                   </>

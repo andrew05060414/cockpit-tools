@@ -1827,7 +1827,7 @@ async fn run_auto_switch_if_needed_inner() -> Result<Option<Account>, String> {
         trigger_context.rule
     ));
 
-    let surfaces = resolve_effective_antigravity_switch_surfaces(&cfg.antigravity_switch_targets);
+    let surfaces = resolve_auto_switch_antigravity_surfaces(&cfg.antigravity_switch_targets);
     modules::logger::log_info(&format!(
         "[AutoSwitch] 切号目标: {:?}",
         surfaces
@@ -2046,7 +2046,37 @@ fn dedupe_antigravity_switch_surfaces(
 pub fn resolve_effective_antigravity_switch_surfaces(
     configured_targets: &[String],
 ) -> Vec<AntigravitySwitchSurface> {
-    let parsed = dedupe_antigravity_switch_surfaces(
+    let parsed = parse_configured_antigravity_switch_surfaces(configured_targets);
+    if !parsed.is_empty() {
+        return parsed;
+    }
+    detect_installed_antigravity_switch_surfaces()
+}
+
+/// Auto-switch prefers a single installed product unless the user explicitly
+/// configured `antigravity_switch_targets`.
+pub fn resolve_auto_switch_antigravity_surfaces(
+    configured_targets: &[String],
+) -> Vec<AntigravitySwitchSurface> {
+    let parsed = parse_configured_antigravity_switch_surfaces(configured_targets);
+    if !parsed.is_empty() {
+        return parsed;
+    }
+
+    match crate::commands::system::resolve_preferred_antigravity_runtime_target() {
+        crate::commands::system::AntigravityRuntimeTargetKind::Legacy => {
+            vec![AntigravitySwitchSurface::Desktop]
+        }
+        crate::commands::system::AntigravityRuntimeTargetKind::Ide => {
+            vec![AntigravitySwitchSurface::Ide]
+        }
+    }
+}
+
+fn parse_configured_antigravity_switch_surfaces(
+    configured_targets: &[String],
+) -> Vec<AntigravitySwitchSurface> {
+    dedupe_antigravity_switch_surfaces(
         configured_targets
             .iter()
             .filter_map(|raw| match raw.trim().to_lowercase().as_str() {
@@ -2056,12 +2086,10 @@ pub fn resolve_effective_antigravity_switch_surfaces(
                 _ => None,
             })
             .collect(),
-    );
+    )
+}
 
-    if !parsed.is_empty() {
-        return parsed;
-    }
-
+fn detect_installed_antigravity_switch_surfaces() -> Vec<AntigravitySwitchSurface> {
     let mut auto = Vec::new();
     if crate::commands::system::is_antigravity_runtime_target_installed(
         crate::commands::system::AntigravityRuntimeTargetKind::Legacy,
@@ -2079,10 +2107,9 @@ pub fn resolve_effective_antigravity_switch_surfaces(
     auto
 }
 
-async fn switch_account_cli_credential_only(account_id: &str) -> Result<(), String> {
-    let account = prepare_account_for_injection(account_id).await?;
+async fn switch_account_cli_credential_only(account: &Account) -> Result<(), String> {
     modules::logger::log_info("[Switch][CLI] 写入 agy / 系统凭据");
-    modules::antigravity_credential::write_antigravity_system_credential(&account)?;
+    modules::antigravity_credential::write_antigravity_system_credential(account)?;
     Ok(())
 }
 
@@ -2094,6 +2121,10 @@ pub async fn switch_account_configured_surfaces(
     reason: &str,
     auto_switch_reason: Option<modules::antigravity_switch_history::AntigravityAutoSwitchReason>,
 ) -> Result<Account, String> {
+    if surfaces.is_empty() {
+        return Err("未配置 Antigravity 切号目标".to_string());
+    }
+
     let cfg = modules::config::get_user_config();
     let mut account = prepare_account_for_injection(account_id).await?;
     set_current_account_id(account_id)?;
@@ -2120,7 +2151,7 @@ pub async fn switch_account_configured_surfaces(
                 }
             }
             AntigravitySwitchSurface::Cli => {
-                switch_account_cli_credential_only(account_id).await?;
+                switch_account_cli_credential_only(&account).await?;
             }
         }
     }
