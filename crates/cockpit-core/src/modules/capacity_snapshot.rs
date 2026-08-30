@@ -30,6 +30,16 @@ pub enum HealthStatus {
     Unavailable,
 }
 
+/// 整份快照是否可供调度消费。
+/// `unavailable` 表示数据源全部失败，调用方必须回退静态路由，而不是猜测配额。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SnapshotAvailability {
+    Ok,
+    Degraded,
+    Unavailable,
+}
+
 /// 配额错误分类（用于健康归因，只携带错误码）
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ErrorKind {
@@ -100,6 +110,21 @@ pub struct SourceStatus {
     pub ok: bool,
 }
 
+fn availability_from_sources(sources: &[SourceStatus]) -> SnapshotAvailability {
+    if sources.is_empty() {
+        return SnapshotAvailability::Unavailable;
+    }
+    let any_ok = sources.iter().any(|s| s.ok);
+    let all_ok = sources.iter().all(|s| s.ok);
+    if all_ok {
+        SnapshotAvailability::Ok
+    } else if any_ok {
+        SnapshotAvailability::Degraded
+    } else {
+        SnapshotAvailability::Unavailable
+    }
+}
+
 /// 净化容量快照
 #[derive(Debug, Clone, Serialize)]
 pub struct CapacitySnapshot {
@@ -108,6 +133,7 @@ pub struct CapacitySnapshot {
     pub generated_at: i64,
     pub ttl_seconds: i64,
     pub source: &'static str,
+    pub availability: SnapshotAvailability,
     pub sources: Vec<SourceStatus>,
     pub routes: Vec<RouteCapacity>,
 }
@@ -422,21 +448,23 @@ pub fn build_snapshot_from_parts(
         routes.push(route_from_codex(account, is_current));
     }
 
+    let sources = vec![
+        SourceStatus {
+            provider: "antigravity".to_string(),
+            ok: true,
+        },
+        SourceStatus {
+            provider: "codex".to_string(),
+            ok: true,
+        },
+    ];
     CapacitySnapshot {
         schema_version: CAPACITY_SNAPSHOT_SCHEMA_VERSION.to_string(),
         generated_at: chrono::Utc::now().timestamp(),
         ttl_seconds: DEFAULT_TTL_SECONDS,
         source: SNAPSHOT_SOURCE,
-        sources: vec![
-            SourceStatus {
-                provider: "antigravity".to_string(),
-                ok: true,
-            },
-            SourceStatus {
-                provider: "codex".to_string(),
-                ok: true,
-            },
-        ],
+        availability: availability_from_sources(&sources),
+        sources,
         routes,
     }
 }
@@ -491,6 +519,7 @@ pub fn build_capacity_snapshot() -> CapacitySnapshot {
         generated_at: chrono::Utc::now().timestamp(),
         ttl_seconds: DEFAULT_TTL_SECONDS,
         source: SNAPSHOT_SOURCE,
+        availability: availability_from_sources(&sources),
         sources,
         routes,
     }
@@ -727,6 +756,7 @@ mod tests {
         assert_eq!(snapshot.ttl_seconds, DEFAULT_TTL_SECONDS);
         assert_eq!(snapshot.routes.len(), 2);
         assert!(snapshot.sources.iter().all(|s| s.ok));
+        assert_eq!(snapshot.availability, SnapshotAvailability::Ok);
         assert!(serde_json::to_value(&snapshot).unwrap()["routes"]
             .as_array()
             .unwrap()
@@ -817,5 +847,63 @@ mod tests {
     fn ratio_clamps_out_of_range_percentages() {
         assert!((ratio_from_percentage(-5) - 0.0).abs() < 1e-9);
         assert!((ratio_from_percentage(150) - 1.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn availability_is_unavailable_when_every_source_fails() {
+        let sources = vec![
+            SourceStatus {
+                provider: "antigravity".to_string(),
+                ok: false,
+            },
+            SourceStatus {
+                provider: "codex".to_string(),
+                ok: false,
+            },
+        ];
+        assert_eq!(
+            availability_from_sources(&sources),
+            SnapshotAvailability::Unavailable
+        );
+        assert_eq!(
+            availability_from_sources(&[]),
+            SnapshotAvailability::Unavailable
+        );
+        let mixed = vec![
+            SourceStatus {
+                provider: "antigravity".to_string(),
+                ok: true,
+            },
+            SourceStatus {
+                provider: "codex".to_string(),
+                ok: false,
+            },
+        ];
+        assert_eq!(
+            availability_from_sources(&mixed),
+            SnapshotAvailability::Degraded
+        );
+    }
+
+    #[test]
+    fn serialized_snapshot_never_contains_secret_shaped_fixture_values() {
+        let mut account = fixture_antigravity_account();
+        account.quota_error = Some(crate::models::QuotaErrorInfo {
+            message: format!("Bearer {SECRET_ACCESS} cookie={SECRET_SESSION}"),
+            timestamp: 1_800_000_000,
+            code: Some(401),
+        });
+        let mut codex = fixture_codex_account();
+        codex.quota_error = Some(crate::models::codex::CodexQuotaErrorInfo {
+            message: format!("refresh={SECRET_REFRESH} key={SECRET_API_KEY}"),
+            timestamp: 1_800_000_000,
+            code: Some("invalid_grant".to_string()),
+        });
+        let snapshot = build_snapshot_from_parts(&[account], None, &[codex], None);
+        let json = serde_json::to_string_pretty(&snapshot).unwrap();
+        assert_no_secrets(&json);
+        assert!(json.contains("\"availability\": \"ok\""));
+        assert!(!json.to_lowercase().contains("bearer "));
+        assert!(!json.contains("cookie="));
     }
 }

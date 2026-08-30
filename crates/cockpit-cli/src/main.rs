@@ -5,7 +5,14 @@ use colored::*;
 use tabled::{Table, Tabled};
 
 #[derive(Parser)]
-#[command(author, version, about = "Cockpit Tools CLI", long_about = None)]
+#[command(
+    name = "cockpit",
+    bin_name = "cockpit",
+    author,
+    version,
+    about = "Cockpit Tools CLI",
+    long_about = None
+)]
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
@@ -101,40 +108,36 @@ async fn main() -> anyhow::Result<()> {
             _ => println!("{} Unknown platform: {}", "Error:".red(), platform),
         },
         Some(Commands::Quota { platform, json }) => {
-            let snapshot = capacity_snapshot::build_capacity_snapshot();
-            let routes = match platform.as_deref().map(str::to_lowercase).as_deref() {
-                None | Some("all") => snapshot.routes,
+            let mut snapshot = capacity_snapshot::build_capacity_snapshot();
+            match platform.as_deref().map(str::to_lowercase).as_deref() {
+                None | Some("all") => {}
                 Some(filter) => {
                     let supported = ["antigravity", "codex"];
                     if !supported.contains(&filter) {
-                        println!(
-                            "{} Unknown or unsupported platform: {} (supported: {})",
-                            "Error:".red(),
-                            filter,
-                            supported.join(", ")
-                        );
+                        if json {
+                            snapshot.routes.clear();
+                            snapshot.availability =
+                                capacity_snapshot::SnapshotAvailability::Unavailable;
+                            snapshot.sources.clear();
+                            println!("{}", serde_json::to_string_pretty(&snapshot)?);
+                        } else {
+                            println!(
+                                "{} Unknown or unsupported platform: {} (supported: {})",
+                                "Error:".red(),
+                                filter,
+                                supported.join(", ")
+                            );
+                        }
                         return Ok(());
                     }
-                    snapshot
-                        .routes
-                        .into_iter()
-                        .filter(|r| r.provider == filter)
-                        .collect()
+                    snapshot.routes.retain(|r| r.provider == filter);
                 }
             };
 
             if json {
-                let mut output = serde_json::json!({
-                    "schema_version": snapshot.schema_version,
-                    "generated_at": snapshot.generated_at,
-                    "ttl_seconds": snapshot.ttl_seconds,
-                    "source": snapshot.source,
-                    "sources": snapshot.sources,
-                });
-                output["routes"] = serde_json::to_value(&routes).unwrap_or_default();
-                println!("{}", serde_json::to_string_pretty(&output)?);
+                println!("{}", serde_json::to_string_pretty(&snapshot)?);
             } else {
-                display_routes(&routes);
+                display_routes(&snapshot.routes);
             }
         }
         None => {
